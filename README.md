@@ -6,11 +6,11 @@ I am a software developer passionated about technology and currently learnig abo
 📫 How to reach me: ilanwendling@gmail.com
 
 
-![ilann's GitHub stats](https://github-readme-stats.vercel.app/api?username=ilann47&show_icons=true&theme=radical)
+![ilann's GitHub stats](https://github-readme-stats.vercel.app/api?username=ilann47&show_icons=true&theme=radical) ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ilann47&theme=radical&layout=donut)
 
 [!ilann's wakatime stats](https://github-readme-stats.vercel.app/api/wakatime?username=ilann47)
 
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ilann47&theme=radical&layout=donut)
+
 <!--
 **ilann47/ilann47** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
