@@ -10,7 +10,7 @@ I am a software developer passionated about technology and currently learnig abo
 
 [!ilann's wakatime stats](https://github-readme-stats.vercel.app/api/wakatime?username=ilann47)
 
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ilann47&hide_progress=true&theme=radical)
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ilann47&hide_progress=false&theme=radical)
 <!--
 **ilann47/ilann47** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
