@@ -1,6 +1,6 @@
 ### Hi there 👋
 
-I am a software developer passionated about technology and currently learnig about everything on my way
+I am a software developer passionated about technology and currently learning about everything on my way!. 😄
 
 
 📫 How to reach me: ilanwendling@gmail.com
