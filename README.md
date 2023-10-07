@@ -4,11 +4,11 @@ I am a software developer passionated about technology and currently learnig abo
 
 
 📫 How to reach me: ilanwendling@gmail.com
-
+018b0b91-2d41-4402-9942-e1c3c2f7d91a
 
 ![ilann's GitHub stats](https://github-readme-stats.vercel.app/api?username=ilann47&show_icons=true&theme=radical) ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ilann47&theme=radical&layout=donut)
 
-[![wakatime](https://wakatime.com/badge/user/018b0b91-2d41-4402-9942-e1c3c2f7d91a.svg)](https://wakatime.com/@018b0b91-2d41-4402-9942-e1c3c2f7d91a)
+[![Harlok's wakatime stats](https://github-readme-stats.vercel.app/api/wakatime?username=018b0b91-2d41-4402-9942-e1c3c2f7d91a)](https://github.com/ilann47/github-readme-stats)
 
 
 
