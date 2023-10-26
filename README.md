@@ -3,13 +3,16 @@
 I am a software developer passionated about technology and currently learning about everything on my way!. 😄
 
 
+[![wakatime](https://wakatime.com/badge/user/018b0b91-2d41-4402-9942-e1c3c2f7d91a.svg)](https://wakatime.com/@018b0b91-2d41-4402-9942-e1c3c2f7d91a)
+
+
 📫 How to reach me: ilanwendling@gmail.com
 
 
 ![ilann's GitHub stats](https://github-readme-stats.vercel.app/api?username=ilann47&show_icons=true&theme=radical) ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ilann47&theme=radical&layout=donut)
 
 [![ilann's wakatime stats](https://github-readme-stats.vercel.app/api/wakatime?username=018b0b91-2d41-4402-9942-e1c3c2f7d91a&theme=radical)](https://github.com/ilann47/github-readme-stats)
-(https://wakatime.com/badge/user/018b0b91-2d41-4402-9942-e1c3c2f7d91a.svg)
+
 
 
 
