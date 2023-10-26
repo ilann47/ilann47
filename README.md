@@ -3,7 +3,7 @@
 I am a software developer passionated about technology and currently learning about everything on my way!. 😄
 
 
-[![wakatime](https://wakatime.com/badge/user/018b0b91-2d41-4402-9942-e1c3c2f7d91a.svg)](https://wakatime.com/@018b0b91-2d41-4402-9942-e1c3c2f7d91a)
+[![wakatime](https://wakatime.com/badge/ilann47/018b0b91-2d41-4402-9942-e1c3c2f7d91a.svg)](https://wakatime.com/@018b0b91-2d41-4402-9942-e1c3c2f7d91a)
 
 
 📫 How to reach me: ilanwendling@gmail.com
