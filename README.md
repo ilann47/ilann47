@@ -7,7 +7,6 @@ I am a software developer passionated about technology and currently learning ab
 
 
 📫 How to reach me: ilanwendling@gmail.com
-![ilann's GitHub stats](https://github-readme-stats.vercel.app/api?username=ilann47&show_icons=true&theme=radical) ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ilann47&theme=radical&layout=donut)
 
 
 
