@@ -10,7 +10,7 @@ I am a software developer passionated about technology and currently learning ab
 
 
 
-[![ilann's wakatime stats](https://github-readme-stats.vercel.app/api/wakatime?username=018b0b91-2d41-4402-9942-e1c3c2f7d91a&theme=radical)](https://github.com/ilann47/github-readme-stats)
+
 
 
 
