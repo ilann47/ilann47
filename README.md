@@ -5,7 +5,8 @@ I am a software developer passionated about technology and currently learning ab
 
 [![wakatime](https://wakatime.com/badge/user/018b0b91-2d41-4402-9942-e1c3c2f7d91a.svg)](https://wakatime.com/@018b0b91-2d41-4402-9942-e1c3c2f7d91a)
 
-<figure><embed src="https://wakatime.com/share/@ilann47/9db0221a-b3f7-4a9a-bdac-bd4ce47c047d.svg"></embed></figure>
+.. image:: https://wakatime.com/share/@ilann47/dd040f30-6766-4d38-88a2-0dc95e6fce55.png
+    :target: https://wakatime.com/
 📫 How to reach me: ilanwendling@gmail.com
 
 
