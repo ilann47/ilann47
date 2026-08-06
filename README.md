@@ -10,6 +10,7 @@ This is how much I work coding
 
 
 📫 How to reach me: ilanwendling@gmail.com
+
 linkedin: https://www.linkedin.com/in/ilan-wendling-thoele/
 
 
