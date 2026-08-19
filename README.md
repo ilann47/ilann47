@@ -1,6 +1,6 @@
 ### Hi there 👋
 
-
+![](https://komarev.com/ghpvc/?username=ilann47&color=dc143c)
 
 [![wakatime](https://wakatime.com/badge/user/018b0b91-2d41-4402-9942-e1c3c2f7d91a.svg)](https://wakatime.com/@018b0b91-2d41-4402-9942-e1c3c2f7d91a)
 
