@@ -13,25 +13,17 @@ This is how much I work coding
 
 linkedin: https://www.linkedin.com/in/ilan-wendling-thoele/
 
+
+
+
+## 📊 Development Analytics
+
+### ⏱️ Coding Activity — Last 7 Days
+
+Weekly coding activity automatically tracked by WakaTime.
+
 <!--START_SECTION:waka-->
 <!--END_SECTION:waka-->
 
-
-
-
-
-
-<!--
-**ilann47/ilann47** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started:
-
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+---
+*Statistics updated automatically via GitHub Actions.*
