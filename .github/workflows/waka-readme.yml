@@ -1,17 +1,53 @@
-name: Waka Readme
+
+name: 📊 WakaTime | Development Analytics
 
 on:
-  # for manual workflow trigger
   workflow_dispatch:
+
   schedule:
-    # runs at 12 AM UTC (5:30 AM IST)
-    - cron: "0 22 * * *"
+    # Atualiza diariamente às 06:00 (Brasília)
+    - cron: "21 22 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wakatime-readme
+  cancel-in-progress: false
 
 jobs:
   update-readme:
-    name: WakaReadme DevMetrics
+    name: Update Coding Statistics
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
-      - uses: athul/waka-readme@master # this action name
+      - name: 📊 Generate WakaTime Statistics
+        uses: athul/waka-readme@master
         with:
+          GH_TOKEN: ${{ github.token }}
           WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+
+          # README configuration
+          SECTION_NAME: waka
+          SHOW_TITLE: "true"
+          CODE_LANG: txt
+
+          # Last 7 days
+          TIME_RANGE: last_7_days
+
+          # Detailed statistics
+          SHOW_TIME: "true"
+          SHOW_TOTAL: "true"
+          SHOW_MASKED_TIME: "false"
+
+          # Languages
+          LANG_COUNT: "10"
+          STOP_AT_OTHER: "false"
+
+          # Progress bar styling
+          BLOCKS: "░▒▓█"
+
+          # Git configuration
+          COMMIT_MESSAGE: "chore(stats): update weekly coding activity"
+          TARGET_PATH: README.md
