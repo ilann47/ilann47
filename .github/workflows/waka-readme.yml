@@ -37,9 +37,10 @@ jobs:
           TIME_RANGE: last_7_days
 
           # Detailed statistics
+          # Detailed statistics
           SHOW_TIME: "true"
           SHOW_TOTAL: "true"
-          SHOW_MASKED_TIME: "false"
+          SHOW_MASKED_TIME: "true"
 
           # Languages
           LANG_COUNT: "10"
