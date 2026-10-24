@@ -13,7 +13,8 @@ This is how much I work coding
 
 linkedin: https://www.linkedin.com/in/ilan-wendling-thoele/
 
-
+<!--START_SECTION:waka-->
+<!--END_SECTION:waka-->
 
 
 
