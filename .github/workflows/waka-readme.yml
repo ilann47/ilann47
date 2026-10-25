@@ -1,12 +1,10 @@
-
 name: 📊 WakaTime | Development Analytics
 
 on:
   workflow_dispatch:
-
   schedule:
-    # Atualiza diariamente às 06:00 (Brasília)
-    - cron: "21 22 * * *"
+    # 06:00 em Brasília (09:00 UTC)
+    - cron: "0 9 * * *"
 
 permissions:
   contents: write
@@ -22,33 +20,160 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: 📊 Generate WakaTime Statistics
-        uses: athul/waka-readme@master
-        with:
-          GH_TOKEN: ${{ github.token }}
-          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          # README configuration
-          SECTION_NAME: waka
-          SHOW_TITLE: "true"
-          CODE_LANG: txt
+      - name: Generate WakaTime statistics
+        env:
+          WAKATIME_TOKEN: ${{ secrets.WAKATIME_API_KEY }}
+        shell: python
+        run: |
+          import json
+          import math
+          import os
+          import re
+          import time
+          from collections import defaultdict
+          from datetime import datetime, timedelta
+          from pathlib import Path
+          from urllib.error import HTTPError, URLError
+          from urllib.parse import urlencode
+          from urllib.request import Request, urlopen
+          from zoneinfo import ZoneInfo
 
-          # Last 7 days
-          TIME_RANGE: last_7_days
+          token = os.environ.get("WAKATIME_TOKEN", "").strip()
+          if not token:
+              raise SystemExit("Configure o secret WAKATIME_API_KEY com o token OAuth.")
 
-          # Detailed statistics
-          # Detailed statistics
-          SHOW_TIME: "true"
-          SHOW_TOTAL: "true"
-          SHOW_MASKED_TIME: "true"
+          timezone = "America/Sao_Paulo"
+          end = datetime.now(ZoneInfo(timezone)).date() - timedelta(days=1)
+          start = end - timedelta(days=6)
 
-          # Languages
-          LANG_COUNT: "10"
-          STOP_AT_OTHER: "false"
+          query = urlencode({
+              "start": start.isoformat(),
+              "end": end.isoformat(),
+              "timezone": timezone,
+          })
+          request = Request(
+              f"https://api.wakatime.com/api/v1/users/current/summaries?{query}",
+              headers={
+                  "Authorization": f"Bearer {token}",
+                  "Accept": "application/json",
+                  "User-Agent": "github-wakatime-readme",
+              },
+          )
 
-          # Progress bar styling
-          BLOCKS: "░▒▓█"
+          payload = None
+          for attempt in range(4):
+              try:
+                  with urlopen(request, timeout=60) as response:
+                      if response.status != 200:
+                          raise RuntimeError("WakaTime ainda está processando os dados.")
+                      payload = json.load(response)
+                  if payload.get("error") or payload.get("errors"):
+                      raise RuntimeError("WakaTime retornou uma resposta de erro.")
+                  break
+              except HTTPError as error:
+                  if error.code in (401, 403):
+                      raise SystemExit(
+                          "WakaTime recusou o acesso. Verifique o token OAuth "
+                          "e a permissão read_summaries."
+                      ) from None
+                  if error.code not in (429, 500, 502, 503, 504):
+                      raise SystemExit(f"WakaTime retornou HTTP {error.code}.") from None
+              except (URLError, TimeoutError, RuntimeError, ValueError):
+                  pass
 
-          # Git configuration
-          COMMIT_MESSAGE: "chore(stats): update weekly coding activity"
-          TARGET_PATH: README.md
+              payload = None
+              if attempt < 3:
+                  time.sleep(15 * (attempt + 1))
+
+          if payload is None:
+              raise SystemExit("Consulta não concluída. O README foi preservado.")
+
+          days = payload["data"]
+          expected_dates = {
+              (start + timedelta(days=index)).isoformat()
+              for index in range(7)
+          }
+          received_dates = [day["range"]["date"] for day in days]
+          if len(days) != 7 or set(received_dates) != expected_dates:
+              raise SystemExit("Resumo incompleto. O README foi preservado.")
+
+          total = float(payload["cumulative_total"]["seconds"])
+          if not math.isfinite(total) or total < 0:
+              raise SystemExit("Total inválido. O README foi preservado.")
+
+          languages = defaultdict(float)
+          for day in days:
+              for language in day.get("languages", []):
+                  languages[language["name"] or "Other"] += float(
+                      language["total_seconds"]
+                  )
+
+          def duration(seconds):
+              minutes = int(seconds // 60)
+              return f"{minutes // 60} hrs {minutes % 60} mins"
+
+          lines = [
+              f"From: {start:%d %B %Y} - To: {end:%d %B %Y}",
+              "",
+              f"Total Time: {duration(total)}",
+              "",
+          ]
+
+          ranked = sorted(
+              languages.items(),
+              key=lambda item: (-item[1], item[0]),
+          )[:10]
+          width = max((len(name) for name, _ in ranked), default=5)
+
+          for name, seconds in ranked:
+              percent = seconds / total * 100 if total else 0
+              filled = min(25, max(0, round(percent / 100 * 25)))
+              bar = "█" * filled + "░" * (25 - filled)
+              lines.append(
+                  f"{name:<{width}}   {duration(seconds):<17}"
+                  f"{bar}   {percent:6.2f} %"
+              )
+
+          if not ranked:
+              lines.append("No activity tracked")
+
+          section = (
+              "<!--START_SECTION:waka-->\n\n```txt\n"
+              + "\n".join(lines)
+              + "\n```\n\n<!--END_SECTION:waka-->"
+          )
+
+          path = Path("README.md")
+          original = path.read_text(encoding="utf-8")
+          pattern = r"<!--START_SECTION:waka-->.*?<!--END_SECTION:waka-->"
+          if len(re.findall(pattern, original, flags=re.DOTALL)) != 1:
+              raise SystemExit("O README precisa conter exatamente uma seção waka.")
+
+          updated = re.sub(
+              pattern,
+              lambda match: section,
+              original,
+              flags=re.DOTALL,
+          )
+          if updated != original:
+              path.write_text(updated, encoding="utf-8")
+
+          print(f"Período: {start} até {end}")
+          print(f"Total: {duration(total)}")
+
+      - name: Commit statistics
+        shell: bash
+        run: |
+          if git diff --quiet -- README.md; then
+            echo "Estatísticas já estão atualizadas."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- README.md
+          git commit -m "chore(stats): update weekly coding activity"
+          git push
