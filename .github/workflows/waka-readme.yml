@@ -2,8 +2,9 @@ name: 📊 WakaTime | Development Analytics
 
 on:
   workflow_dispatch:
+
   schedule:
-    # 06:00 em Brasília (09:00 UTC)
+    # Diariamente às 06:00 de Brasília (09:00 UTC)
     - cron: "0 9 * * *"
 
 permissions:
@@ -33,6 +34,7 @@ jobs:
           import os
           import re
           import time
+          from base64 import b64encode
           from collections import defaultdict
           from datetime import datetime, timedelta
           from pathlib import Path
@@ -43,9 +45,19 @@ jobs:
 
           token = os.environ.get("WAKATIME_TOKEN", "").strip()
           if not token:
-              raise SystemExit("Configure o secret WAKATIME_API_KEY com o token OAuth.")
+              raise SystemExit("O secret WAKATIME_API_KEY não foi configurado.")
+
+          # OAuth usa Bearer.
+          # Chaves legadas usam o mesmo Basic da action anterior.
+          if token.startswith("waka_tok_"):
+              authorization = f"Bearer {token}"
+          else:
+              encoded = b64encode(token.encode("utf-8")).decode("ascii")
+              authorization = f"Basic {encoded}"
 
           timezone = "America/Sao_Paulo"
+
+          # Mesmo período do painel: Last 7 Days from Yesterday.
           end = datetime.now(ZoneInfo(timezone)).date() - timedelta(days=1)
           start = end - timedelta(days=6)
 
@@ -54,62 +66,123 @@ jobs:
               "end": end.isoformat(),
               "timezone": timezone,
           })
+
           request = Request(
               f"https://api.wakatime.com/api/v1/users/current/summaries?{query}",
               headers={
-                  "Authorization": f"Bearer {token}",
+                  "Authorization": authorization,
                   "Accept": "application/json",
                   "User-Agent": "github-wakatime-readme",
               },
           )
 
           payload = None
+
           for attempt in range(4):
               try:
                   with urlopen(request, timeout=60) as response:
                       if response.status != 200:
-                          raise RuntimeError("WakaTime ainda está processando os dados.")
-                      payload = json.load(response)
-                  if payload.get("error") or payload.get("errors"):
-                      raise RuntimeError("WakaTime retornou uma resposta de erro.")
+                          raise RuntimeError(
+                              "WakaTime ainda está processando os dados."
+                          )
+                      candidate = json.load(response)
+
+                  if not isinstance(candidate, dict):
+                      raise RuntimeError("Resposta inválida do WakaTime.")
+
+                  if candidate.get("error") or candidate.get("errors"):
+                      raise RuntimeError("WakaTime retornou um erro.")
+
+                  payload = candidate
                   break
+
               except HTTPError as error:
                   if error.code in (401, 403):
                       raise SystemExit(
-                          "WakaTime recusou o acesso. Verifique o token OAuth "
-                          "e a permissão read_summaries."
+                          f"WakaTime recusou o acesso: HTTP {error.code}. "
+                          "Verifique o secret WAKATIME_API_KEY. "
+                          "Se a chave legada não permitir consultas, utilize "
+                          "um token OAuth com permissão read_summaries. "
+                          "O README foi preservado."
                       ) from None
-                  if error.code not in (429, 500, 502, 503, 504):
-                      raise SystemExit(f"WakaTime retornou HTTP {error.code}.") from None
-              except (URLError, TimeoutError, RuntimeError, ValueError):
-                  pass
 
-              payload = None
+                  if error.code not in (429, 500, 502, 503, 504):
+                      raise SystemExit(
+                          f"WakaTime retornou HTTP {error.code}. "
+                          "O README foi preservado."
+                      ) from None
+
+                  print(
+                      f"Tentativa {attempt + 1}: HTTP {error.code}.",
+                      flush=True,
+                  )
+
+              except (URLError, TimeoutError, RuntimeError, ValueError):
+                  print(
+                      f"Tentativa {attempt + 1}: consulta não concluída.",
+                      flush=True,
+                  )
+
               if attempt < 3:
                   time.sleep(15 * (attempt + 1))
 
           if payload is None:
-              raise SystemExit("Consulta não concluída. O README foi preservado.")
+              raise SystemExit(
+                  "Não foi possível consultar o WakaTime. "
+                  "O README foi preservado."
+              )
 
-          days = payload["data"]
+          days = payload.get("data")
+          if not isinstance(days, list):
+              raise SystemExit(
+                  "Resposta sem resumos diários. O README foi preservado."
+              )
+
           expected_dates = {
               (start + timedelta(days=index)).isoformat()
               for index in range(7)
           }
-          received_dates = [day["range"]["date"] for day in days]
-          if len(days) != 7 or set(received_dates) != expected_dates:
-              raise SystemExit("Resumo incompleto. O README foi preservado.")
 
-          total = float(payload["cumulative_total"]["seconds"])
+          received_dates = [
+              day.get("range", {}).get("date")
+              for day in days
+          ]
+
+          if len(days) != 7 or set(received_dates) != expected_dates:
+              raise SystemExit(
+                  "O WakaTime retornou um período incompleto. "
+                  "O README foi preservado."
+              )
+
+          # Total do resumo diário, incluindo Other.
+          # Não utiliza o endpoint semanal /stats/last_7_days.
+          cumulative = payload.get("cumulative_total", {})
+          if "seconds" not in cumulative:
+              raise SystemExit(
+                  "Resposta sem total acumulado. O README foi preservado."
+              )
+
+          total = float(cumulative["seconds"])
+
           if not math.isfinite(total) or total < 0:
-              raise SystemExit("Total inválido. O README foi preservado.")
+              raise SystemExit(
+                  "Total acumulado inválido. O README foi preservado."
+              )
 
           languages = defaultdict(float)
+
           for day in days:
               for language in day.get("languages", []):
-                  languages[language["name"] or "Other"] += float(
-                      language["total_seconds"]
-                  )
+                  name = language.get("name") or "Other"
+                  seconds = float(language["total_seconds"])
+
+                  if not math.isfinite(seconds) or seconds < 0:
+                      raise SystemExit(
+                          "Tempo de linguagem inválido. "
+                          "O README foi preservado."
+                      )
+
+                  languages[name] += seconds
 
           def duration(seconds):
               minutes = int(seconds // 60)
@@ -126,14 +199,20 @@ jobs:
               languages.items(),
               key=lambda item: (-item[1], item[0]),
           )[:10]
-          width = max((len(name) for name, _ in ranked), default=5)
+
+          width = max(
+              (len(name) for name, _ in ranked),
+              default=5,
+          )
 
           for name, seconds in ranked:
               percent = seconds / total * 100 if total else 0
               filled = min(25, max(0, round(percent / 100 * 25)))
               bar = "█" * filled + "░" * (25 - filled)
+
               lines.append(
-                  f"{name:<{width}}   {duration(seconds):<17}"
+                  f"{name:<{width}}   "
+                  f"{duration(seconds):<17}"
                   f"{bar}   {percent:6.2f} %"
               )
 
@@ -141,16 +220,29 @@ jobs:
               lines.append("No activity tracked")
 
           section = (
-              "<!--START_SECTION:waka-->\n\n```txt\n"
+              "<!--START_SECTION:waka-->\n\n"
+              "```txt\n"
               + "\n".join(lines)
-              + "\n```\n\n<!--END_SECTION:waka-->"
+              + "\n```\n\n"
+              "<!--END_SECTION:waka-->"
           )
 
           path = Path("README.md")
           original = path.read_text(encoding="utf-8")
-          pattern = r"<!--START_SECTION:waka-->.*?<!--END_SECTION:waka-->"
-          if len(re.findall(pattern, original, flags=re.DOTALL)) != 1:
-              raise SystemExit("O README precisa conter exatamente uma seção waka.")
+
+          pattern = (
+              r"<!--START_SECTION:waka-->"
+              r".*?"
+              r"<!--END_SECTION:waka-->"
+          )
+
+          matches = re.findall(pattern, original, flags=re.DOTALL)
+
+          if len(matches) != 1:
+              raise SystemExit(
+                  "O README precisa conter exatamente uma seção waka: "
+                  "<!--START_SECTION:waka--> e <!--END_SECTION:waka-->."
+              )
 
           updated = re.sub(
               pattern,
@@ -158,22 +250,30 @@ jobs:
               original,
               flags=re.DOTALL,
           )
+
           if updated != original:
               path.write_text(updated, encoding="utf-8")
+              print("Seção waka atualizada.")
+          else:
+              print("Seção waka já está atualizada.")
 
           print(f"Período: {start} até {end}")
+          print(f"Fuso horário: {timezone}")
           print(f"Total: {duration(total)}")
 
       - name: Commit statistics
         shell: bash
         run: |
+          set -euo pipefail
+
           if git diff --quiet -- README.md; then
-            echo "Estatísticas já estão atualizadas."
+            echo "Nenhuma alteração nas estatísticas."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add -- README.md
           git commit -m "chore(stats): update weekly coding activity"
           git push
