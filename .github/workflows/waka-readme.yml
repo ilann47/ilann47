@@ -24,9 +24,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Test README statistics workflow
+        run: python -m unittest discover -s tests -v
+
       - name: Generate WakaTime statistics
         env:
-          WAKATIME_TOKEN: ${{ secrets.WAKATIME_API_KEY }}
+          WAKATIME_OAUTH_TOKEN: ${{ secrets.WAKATIME_OAUTH_TOKEN }}
         shell: python
         run: |
           import json
@@ -34,7 +37,6 @@ jobs:
           import os
           import re
           import time
-          from base64 import b64encode
           from collections import defaultdict
           from datetime import datetime, timedelta
           from pathlib import Path
@@ -43,17 +45,23 @@ jobs:
           from urllib.request import Request, urlopen
           from zoneinfo import ZoneInfo
 
-          token = os.environ.get("WAKATIME_TOKEN", "").strip()
+          token = os.environ.get("WAKATIME_OAUTH_TOKEN", "").strip()
           if not token:
-              raise SystemExit("O secret WAKATIME_API_KEY não foi configurado.")
+              raise SystemExit(
+                  "O secret WAKATIME_OAUTH_TOKEN não foi configurado. "
+                  "Obtenha seu token OAuth pessoal em https://wakatime.com/oauth "
+                  "e salve-o nos secrets de Actions deste repositório. "
+                  "O README foi preservado."
+              )
 
-          # OAuth usa Bearer.
-          # Chaves legadas usam o mesmo Basic da action anterior.
-          if token.startswith("waka_tok_"):
-              authorization = f"Bearer {token}"
-          else:
-              encoded = b64encode(token.encode("utf-8")).decode("ascii")
-              authorization = f"Basic {encoded}"
+          if not token.startswith("waka_tok_") or token == "waka_tok_":
+              raise SystemExit(
+                  "WAKATIME_OAUTH_TOKEN precisa conter um token OAuth "
+                  "de https://wakatime.com/oauth, não uma API key de plugin. "
+                  "O README foi preservado."
+              )
+
+          authorization = f"Bearer {token}"
 
           timezone = "America/Sao_Paulo"
 
@@ -100,9 +108,8 @@ jobs:
                   if error.code in (401, 403):
                       raise SystemExit(
                           f"WakaTime recusou o acesso: HTTP {error.code}. "
-                          "Verifique o secret WAKATIME_API_KEY. "
-                          "Se a chave legada não permitir consultas, utilize "
-                          "um token OAuth com permissão read_summaries. "
+                          "Verifique a validade do secret WAKATIME_OAUTH_TOKEN "
+                          "e a permissão read_summaries do token OAuth. "
                           "O README foi preservado."
                       ) from None
 

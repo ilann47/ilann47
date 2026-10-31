@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    {"id": "core", "type": "file", "file": "core.md", "x": 0, "y": 0, "width": 440, "height": 320},
+    {"id": "wakatime", "type": "file", "file": "wakatime.md", "x": 560, "y": 0, "width": 480, "height": 480}
+  ],
+  "edges": [
+    {"id": "core-wakatime", "fromNode": "core", "fromSide": "right", "toNode": "wakatime", "toSide": "left", "label": "Estatísticas do README"}
+  ]
+}
