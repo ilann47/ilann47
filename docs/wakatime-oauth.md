@@ -48,6 +48,11 @@ Este workflow não implementa renovação automática de tokens.
 - Antes da migração, havia somente `WAKATIME_API_KEY`, criado e atualizado em
   `2026-10-24T01:10:09Z`. Nenhum valor de secret foi lido.
 - Permissão padrão do token do Actions: `write`; o workflow declara `contents: write`.
+- Actions habilitado (`allowed_actions: all`). Em segunda consulta ainda faltava
+  `WAKATIME_OAUTH_TOKEN`.
+- Migração publicada na branch `fix/wakatime-oauth`, commit `00327f6`, em
+  [PR de rascunho #1](https://github.com/ilann47/ilann47/pull/1). Integração e
+  validação autenticada ainda pendentes.
 - Execução anterior à migração: [41213024700](https://github.com/ilann47/ilann47/actions/runs/41213024700),
   iniciada em `2026-10-31T15:03:46Z`, conclusão `success`. Não comprova OAuth.
 - Testes locais do script real embutido, com HTTP substituído por respostas

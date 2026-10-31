@@ -2,7 +2,7 @@
 
 # Estado do Projeto
 **Última atualização:** 2026-10-31
-**Fase atual:** OAuth implementado e validado localmente; configuração remota pendente
+**Fase atual:** OAuth publicado em PR de rascunho; configuração remota e execução real pendentes
 
 ## O que foi feito
 - Repositório `https://github.com/ilann47/ilann47.git` clonado em `C:\Users\ilan.wendling\claude\ilann47`.
@@ -17,6 +17,9 @@
 - Configuração remota consultada: apenas WAKATIME_API_KEY, atualizado em 2026-10-24T01:10:09Z; permissão padrão do Actions write. Nenhum valor de credencial lido.
 - Última execução anterior à migração: 41213024700, success, iniciada em 2026-10-31T15:03:46Z.
 - Instruções operacionais em [[docs/wakatime-oauth]] e plano em [[.planning/2026-10-31-wakatime-oauth]].
+- Commit de implementação 00327f6 publicado em origin/fix/wakatime-oauth.
+- PR de rascunho aberto: https://github.com/ilann47/ilann47/pull/1; GitHub confirmou mergeable=true e mergeable_state=clean.
+- Actions habilitado, allowed_actions=all. Segunda consulta de secrets ainda mostrou somente WAKATIME_API_KEY.
 
 ## Decisões tomadas
 - Usar secret OAuth dedicado para não confundir com as API keys dos plugins.
@@ -26,10 +29,9 @@
 - Separar preparação local, alteração de código e validação real no GitHub Actions.
 
 ## Próximos passos
-1. Registrar a mudança em commit e publicar a branch para revisão.
-2. Usuário cadastrar WAKATIME_OAUTH_TOKEN em Settings → Secrets and variables → Actions a partir de https://wakatime.com/oauth. Instruções enviadas sem solicitar o valor do token.
-3. Com o secret configurado, executar o workflow na branch e verificar geração/commit.
-4. Integrar à main após autorização e validar a execução da versão integrada.
+1. Usuário cadastrar WAKATIME_OAUTH_TOKEN em Settings → Secrets and variables → Actions a partir de https://wakatime.com/oauth. Instruções enviadas sem solicitar o valor do token.
+2. Com o secret configurado, executar o workflow na branch e verificar geração/commit.
+3. Integrar o PR #1 à main após autorização e validar a execução da versão integrada.
 
 ## Bloqueios / Dívidas técnicas
 - WAKATIME_OAUTH_TOKEN não existia na consulta remota. Falta configuração segura pelo usuário.

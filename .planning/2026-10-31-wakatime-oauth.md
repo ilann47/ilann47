@@ -14,7 +14,9 @@ Autorização: usuário aprovou seguir com a migração e verificar configuraç�
    Concluído: sete testes GREEN, YAML válido, `git diff --check` sem erros.
 4. Atualizar `.gitignore`, `docs/wakatime-oauth.md`, [[../brain/core]],
    [[../brain/wakatime]] e [[../STATE]]. Revisar diff e registrar commit lógico.
+   Concluído: implementação no commit 00327f6.
 5. Publicar a branch para revisão, configurar secret e executar na branch.
+   Branch publicada; PR de rascunho #1 aberto, sem conflitos segundo o GitHub.
    Credencial depende de configuração segura pelo usuário; nenhuma leitura de valor.
 6. Integrar à main e confirmar execução do novo workflow para ativar o agendamento.
    Integração depende de autorização; não inferir migração ativa a partir de teste local.
