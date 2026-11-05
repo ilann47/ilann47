@@ -25,20 +25,20 @@ Weekly coding activity automatically tracked by WakaTime.
 <!--START_SECTION:waka-->
 
 ```txt
-From: 28 October 2026 - To: 03 November 2026
+From: 29 October 2026 - To: 04 November 2026
 
-Total Time: 29 hrs 46 mins
+Total Time: 24 hrs 11 mins
 
-Markdown     9 hrs 52 mins    ████████░░░░░░░░░░░░░░░░░    33.17 %
-Other        6 hrs 36 mins    ██████░░░░░░░░░░░░░░░░░░░    22.18 %
-Python       3 hrs 11 mins    ███░░░░░░░░░░░░░░░░░░░░░░    10.73 %
-Ruby         2 hrs 58 mins    ██░░░░░░░░░░░░░░░░░░░░░░░     9.98 %
-Java         1 hrs 50 mins    ██░░░░░░░░░░░░░░░░░░░░░░░     6.17 %
-PowerShell   1 hrs 45 mins    █░░░░░░░░░░░░░░░░░░░░░░░░     5.88 %
-JavaScript   0 hrs 52 mins    █░░░░░░░░░░░░░░░░░░░░░░░░     2.93 %
-TypeScript   0 hrs 52 mins    █░░░░░░░░░░░░░░░░░░░░░░░░     2.93 %
-CSV          0 hrs 31 mins    ░░░░░░░░░░░░░░░░░░░░░░░░░     1.74 %
-JSON         0 hrs 27 mins    ░░░░░░░░░░░░░░░░░░░░░░░░░     1.56 %
+Markdown     8 hrs 15 mins    █████████░░░░░░░░░░░░░░░░    34.16 %
+Other        5 hrs 56 mins    ██████░░░░░░░░░░░░░░░░░░░    24.54 %
+Ruby         2 hrs 58 mins    ███░░░░░░░░░░░░░░░░░░░░░░    12.29 %
+Python       1 hrs 55 mins    ██░░░░░░░░░░░░░░░░░░░░░░░     7.94 %
+Java         1 hrs 30 mins    ██░░░░░░░░░░░░░░░░░░░░░░░     6.23 %
+PowerShell   0 hrs 57 mins    █░░░░░░░░░░░░░░░░░░░░░░░░     3.98 %
+TypeScript   0 hrs 52 mins    █░░░░░░░░░░░░░░░░░░░░░░░░     3.61 %
+CSV          0 hrs 31 mins    █░░░░░░░░░░░░░░░░░░░░░░░░     2.14 %
+JavaScript   0 hrs 28 mins    ░░░░░░░░░░░░░░░░░░░░░░░░░     1.96 %
+YAML         0 hrs 11 mins    ░░░░░░░░░░░░░░░░░░░░░░░░░     0.78 %
 ```
 
 <!--END_SECTION:waka-->
